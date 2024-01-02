@@ -1,0 +1,7 @@
+Well done!
+
+I would appreciate if you would add files as .txt ot .sql :) Thanks!
+
+4.a
+Email Promotion should not INCLUDE (it's not = should not BE EQUAL). 
+
