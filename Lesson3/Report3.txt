@@ -1,0 +1,42 @@
+2.
+a)
+SELECT Name, 
+case when StandardCost=0 OR  StandardCost is NULL then 'Not for sale' 
+     when StandardCost > 0 AND StandardCost <100 then '<$100'
+     when StandardCost >= 100 AND StandardCost<500 then '<$500'
+     ELSE ' >= $500' END AS PriceRange
+FROM [Production].[Product]
+b)
+SELECT PP.ProductID,PP.BusinessEntityID,PV.Name
+FROM Purchasing.ProductVendor PP
+JOIN Purchasing.Vendor PV 
+ON PP.BusinessEntityID = PV.BusinessEntityID
+WHERE PP.StandardPrice > 10 
+AND (PV.Name LIKE '%X%' OR PV.Name LIKE 'N%')
+c)
+SELECT PV.Name
+FROM Purchasing.Vendor PV
+LEFT JOIN Purchasing.ProductVendor PP 
+ON PV.BusinessEntityID=PP.BusinessEntityID
+WHERE PP.BusinessEntityID is NULL
+3.
+a)
+SELECT PP.Name, PP.StandardCost, PM.Name
+FROM Production.Product PP
+JOIN Production.ProductModel PM 
+ON PP.ProductModelID=PM.ProductModelID
+WHERE PM.Name LIKE 'LL%'
+b)
+SELECT Name
+FROM Purchasing.Vendor
+UNION
+SELECT Name
+FROM Sales.Store
+c)
+SELECT  PP.Name
+FROM (SELECT ProductID, COUNT (SpecialOfferID) AS count
+      FROM Sales.SpecialOfferProduct
+      GROUP BY ProductID
+      HAVING COUNT (SpecialOfferID) > 1) SP
+JOIN Production.Product PP 
+ON SP.ProductID=PP.ProductID
