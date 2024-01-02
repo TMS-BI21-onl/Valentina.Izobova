@@ -1,0 +1,5 @@
+Well done!
+
+3.c
+Can be rewritten without a subquery. 
+Why do we need it? We can just join these 2 tables and move HAVING from the subquery to the main query. 
