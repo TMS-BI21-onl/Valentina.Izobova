@@ -1,0 +1,67 @@
+Задача 1
+Выберите из таблицы Водители записи, где стаж водителя не равен 3, 5, 6, 10 и  место прописки 'eee'.
+
+SELECT * 
+FROM Водители
+WHERE Стаж NOT IN (3, 5, 6, 10) AND Место прописки = 'eee'
+
+Задача 2
+
+Найдите № паспортов водителей, которые ни разу не совершали поездки (решите задачу через left join).
+SELECT В. № паспорта
+FROM Водители В
+LEFT JOIN Диспетчерская Д ON В.Код водителя= Д.Код водителя
+WHERE Д.Код водителя IS NULL
+
+Задача 3
+
+Написать запрос на выборку авто с годом выпуска = 2015 и его маршруты (таблицы Aвто, Диспеческая, Маршрут). Вывести рег номер авто, время прибытия и отбытия, пункт назначения.
+SELECT А.Регистрационный № авто, Д.время прибытия, Д.время отбытия, М. пункт назначения
+FROM Aвто A
+JOIN Диспетчерская Д ON А.Код авто= Д.Код авто
+JOIN Маршрут М ON Д.Путевка= М. Код маршрута
+WHERE А.Год выпуска = 2015
+
+Задача 1
+Сколько сотрудников, имена которых начинается с одной и той же буквы? Сортировать по количеству. Показывать только те, где количество больше 1.
+SELECT substr(FIRST_NAME,1,1) AS ABC, 
+COUNT(FIRST_NAME)
+FROM EMPLOYEES
+GROUP BY ABC
+HAVING > 1
+ORDER BY ABC
+
+Задача 2
+Сколько сотрудников, которые работают в одном и том же отделе и получают одинаковую зарплату?
+SELECT *
+FROM EMPLOYEES
+WHERE MANAGER_ID IS NULL
+
+Задача 3
+ Показать всех сотрудников, которые никому не подчиняются.
+SELECT DEPERTMENT_ID, 
+SALARY, COUNT(FIRST_NAME) OVER (PARTITION BY DEPERTMENT_ID, SALARY)
+FROM EMPLOYEES
+
+Задача 4
+Получить список сотрудников с самым длинным именем.
+SELECT FIRST_NAME
+FROM EMPLOYEES 
+WHERE LENGTH (FIRST_NAME) = (SELECT MAX (LENGTH (FIRST_NAME)) FROM EMPLOYEES)
+
+Задача 5
+(душная)
+В таблице Employees хранятся все сотрудники. В таблице Job_history хранятся сотрудники, которые покинули компанию. Получить репорт о всех сотрудниках и о их статусе в компании (Работает или покинул компанию с датой ухода)
+Пример:
+first_name	Status
+Jennifer	Left the company at 31 of December, 2006
+Clara	Currently Working
+
+SELECT E. FIRST_NAME, 
+CASE 
+WHEN J.EMPLOYEE_ID IS NULL THEN ‘Currently Working’
+ELSE CONCAT (‘Left the company at’, ‘ ’, ‘END-DATE’)
+END 
+AS Status
+FROM Employees E
+LEFT JOIN Job_history J ON E.EMPLOYEE_ID= J.EMPLOYEE_ID
