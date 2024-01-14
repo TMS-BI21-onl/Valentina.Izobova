@@ -1,0 +1,19 @@
+2.
+uspGetBillOfMaterials
+uspGetEmployeeManagers
+uspGetManagerEmployees
+uspGetWhereUsedProductID
+uspLogError
+uspPrintError
+uspSearchCandidateResumes
+uspUpdateEmployeeHireInfo
+uspUpdateEmployeeLogin
+uspUpdateEmployeePersonalInfo
+3.
+CREATE PROCEDURE UPD 
+AS
+UPDATE HumanResources.Employee
+SET NationalIDNumber =879341111
+WHERE BusinessEntityID=15;
+
+EXEC UPD
