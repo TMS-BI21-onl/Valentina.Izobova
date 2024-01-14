@@ -1,0 +1,68 @@
+6.
+CREATE TABLE dbo.Patients
+(
+    --ID       		INT, 
+    FirstName		NVARCHAR(100), 
+    LastName		NVARCHAR(100), 
+    SSN             INT,
+	Email AS CONCAT(UPPER(SUBSTRING(FirstName,1,1)), LOWER(SUBSTRING (LastName,1,3)),'@mail.com'),
+	Temp INT,
+	CreatedDate Date DEFAULT GETDATE()
+);
+CREATE SEQUENCE dbo.Patient_ID_Seq
+AS INT
+START WITH 1
+INCREMENT BY 1; 
+
+ALTER TABLE dbo.Patients
+    ADD ID INT DEFAULT NEXT VALUE FOR dbo.Patient_ID_Seq;
+7.
+INSERT INTO Patients (FirstName, LastName, SSN,Temp)
+VALUES
+    (N'Valentina','Izobova','111111', 37),
+    (N'Oleg','Selvanovich','111112', 36)
+8.
+ALTER TABLE dbo.Patients
+ADD TempType AS CASE WHEN Temp < 37 THEN '< 37°C'
+					 ELSE '>= 37°C'
+					 END
+9.
+CREATE VIEW dbo.Patients_v
+   WITH SCHEMABINDING		--Привязывает представление к схеме базовой таблицы или таблиц. 
+   AS  
+      SELECT FirstName, 
+             LastName, 
+             SSN,
+	         Email,
+	         Temp * 9/5 + 32 as TempF ,
+	         CreatedDate,
+			 ID
+      FROM dbo.Patients
+10.
+CREATE FUNCTION dbo.TempC_F (
+    @Temp INT
+)
+RETURNS INT
+AS 
+BEGIN
+    RETURN @Temp * 9 / 5 +32;
+END
+10.
+DECLARE @Date DATE = GETDATE(); -- Задайте нужную дату
+
+SELECT MIN(Date) AS FirstWorkingDay
+FROM (
+    SELECT DATEADD(DAY, number, DATEADD(MONTH, DATEDIFF(MONTH, 0, @Date), 0)) AS Date
+    FROM master..spt_values
+    WHERE type = 'P' AND number <= DAY(EOMONTH(@Date))
+) AS Dates
+WHERE DATEPART(WEEKDAY, Date) NOT IN (1, 7)
+12.
+SELECT E. FIRST_NAME, 
+CASE 
+WHEN J.EMPLOYEE_ID IS NULL THEN ‘Currently Working’
+ELSE CONCAT (‘Left the company at’, ‘ ’, ‘END-DATE’)
+END 
+AS Status
+FROM Employees E
+LEFT JOIN Job_history J ON E.EMPLOYEE_ID= J.EMPLOYEE_ID
