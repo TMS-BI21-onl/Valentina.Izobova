@@ -1,0 +1,14 @@
+2. 
+CREATE TABLE #tmp_people (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50)
+);
+
+
+INSERT INTO #tmp_people (first_name, last_name)
+SELECT TOP 1000000 first_name, last_name
+FROM EMPLOYEES
+ORDER BY NEWID();
+
+3. Used in SQL to create temporary results that can be used in subsequent queries. Differs from subqueries Readability and reusability, Supports various operations: CTE can be used to implement recursive queries and work with window functions
