@@ -1,0 +1,5 @@
+Well done!
+
+
+7
+In your solution end-date is just text. And if you even change it to the column, than if j.emploee_id is null, j.end_date will be null too.
