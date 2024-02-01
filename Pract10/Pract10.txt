@@ -1,0 +1,49 @@
+1)
+SELECT PP.FirstName, PP.LastName, PPP.PhoneNumber 
+FROM Person.Person PP
+LEFT JOIN Person.PersonPhone PPP ON PP.BusinessEntityID=PPP.BusinessEntityID
+WHERE PPP.PhoneNumber LIKE '4_5%';
+
+2) 
+SELECT *
+FROM HumanResources.Employee E;
+
+SELECT E.BusinessEntityID, DATEDIFF(YEAR, E.BirthDate, GETDATE ()) AS AGE,
+CASE WHEN DATEDIFF(YEAR, E.BirthDate, GETDATE ()) BETWEEN 17 AND 20 THEN 'Adolescence'
+     WHEN DATEDIFF(YEAR, E.BirthDate, GETDATE ()) BETWEEN 21 AND 59 THEN 'Adults'
+	 WHEN DATEDIFF(YEAR, E.BirthDate, GETDATE ()) BETWEEN 60 AND 75 THEN 'Elderly'
+	 WHEN DATEDIFF(YEAR, E.BirthDate, GETDATE ()) BETWEEN 76 AND 90 THEN 'Senile'
+ELSE NULL
+END AS CATEGORY
+FROM HumanResources.Employee E;
+
+3) 
+SELECT distinct Color, MAX(StandardCost) OVER (PARTITION BY Color)
+FROM Production.Product;
+
+select distinct pp.Color, pp.StandardCost
+from Production.Product pp
+where pp.StandardCost in
+(SELECT MAX(StandardCost)
+FROM Production.Product
+where Color=pp.Color);
+
+select Color, max(StandardCost) from Production.Product
+group by Color
+
+4)
+10 Zoo
+
+(ID, names, title, type, name, ID, ID of the responsible employee of the cell)
+cell (ID, cell name, coordinates, number of places, extreme places)
+species of baby (id, species name)
+visit (ID, date, ticket number, ticket type, last, number of people, ticket ID)
+ticket type (ID, ticket type name, price)
+personnel (ID, full name, position)
+event (id, name, date, time, kitten ID, employee ID, price)
+
+Indicate who will participate and where to look for animals participating in the "Winter Standing Festival" event (indicate the name, name of the animal, name and coordinates of the cage)
+Indicate in which cell link there are 2 wolves (indicate the name and coordinates of the cell)?
+
+
+
