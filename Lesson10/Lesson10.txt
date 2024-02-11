@@ -1,0 +1,15 @@
+SELECT Year, [1] AS January, [2] AS February, [12] AS December
+FROM
+(
+    SELECT YEAR(w.ModifiedDate) AS Year,
+           MONTH(w.ModifiedDate) AS Month,
+           w.OrderQty
+    FROM Production.WorkOrder w
+    WHERE MONTH(w.ModifiedDate) IN (1, 2, 12)
+) AS SourceTable
+PIVOT
+(
+    SUM(OrderQty)
+    FOR Month IN ([1], [2], [12])
+) AS PivotTable
+ORDER BY Year
