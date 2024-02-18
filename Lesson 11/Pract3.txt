@@ -1,0 +1,38 @@
+
+TASK 1
+1. Books (book_id, title, author_id, category_id, publisher_id, price)
+2. Authors (author_id, author_name, nationality, birth_date, death_date)
+3. Publishers (publisher_id, publisher_name, publication_date, location, contact_number, email)
+4. Members (member_id, member_name, birth_date, address, contact_number, email)
+5. Loans (loan_id, book_id, member_id, loan_date, return_date)
+6. Categories (category_id, category_name, genre)
+7. Rewiews (rewiew_id, book_id, member_id, rating, comment)
+
+Вывести количество аренд по возрастным групам пользователей (18-30 лет, 31-39 лет, 40-59 лет, 60 и старше) за последние 5 лет. Результаты вывести в виде транспонированной таблицы. (Оси - группы покупателей и годы аренд)
+Сколько пользователей библиотеки брали в аренду книги с низким средним рейтингом (1-3) от авторов, которые еще живы (по состоянию на прошедший месяц)
+
+SELECT Year, [2024], [2023], [2022], [2021], [2020]
+FROM
+(SELECT 
+DATEADD (GETDATE(), birth_date) AS AGE,
+CASE WHEN AGE BETWEEN 18 AND 30 THEN '18-30 лет'
+WHEN AGE BETWEEN 31 AND 39 THEN '31-39 лет'
+WHEN AGE BETWEEN 40 AND 59 THEN '40-59 лет'
+WHEN AGE > 60 THEN '60 и старше'
+ELSE NULL
+FROM Members M
+JOIN Loans L ON M.member_id=L.member_id
+WHERE YEAR(return_date) IN (2024,2023,2022,2021,2020)) AS SourceTable
+PIVOT
+(COUNT(loan_id)
+FOR YEAR(return_date) IN ([2024], [2023], [2022], [2021], [2020])
+) AS PivotTable
+ORDER BY Year
+
+SELECT COUNT(DISTINCT member_id)
+FROM Loans L
+JOIN Books B ON L.book_id=B.book_id
+JOIN Rewiews R ON B.book_id=R.book_id
+JOIN Authors A ON A.author_id=B.author_id 
+WHERE rating BETWEEN 1 AND 3
+AND death_date IS NULL
