@@ -1,0 +1,72 @@
+1. Найти ProductSubcategoryID из Production.Product, где мин вес такого ProductSubcategoryID больше 150. 
+
+SELECT ProductSubcategoryID, MIN (P.WEIGHT) AS MIN_WEIGHT
+FROM Production.Product P
+GROUP BY ProductSubcategoryID
+HAVING MIN (P.WEIGHT) > 150
+
+2. Найти самый дорогой продукт (поле StandardCost) из Production.Product. (4 способа)
+
+1.
+SELECT Name, StandardCost
+FROM Production.Product
+where StandardCost in
+(SELECT MAX(StandardCost) 
+FROM Production.Product)
+
+2. 
+SELECT TOP 1 WITH TIES Name, StandardCost
+FROM Production.Product
+ORDER BY StandardCost DESC
+
+3.
+SELECT Name, StandardCost FROM 
+(SELECT Name, StandardCost, MAX(StandardCost) OVER () AS MAX_COST
+FROM Production.Product) T
+WHERE StandardCost=MAX_COST
+
+4.
+SELECT Name, StandardCost
+FROM 
+(SELECT Name, StandardCost, RANK() OVER (ORDER BY StandardCost DESC) as rnk
+	FROM Production.Product) t
+WHERE rnk=1
+3. Найти клиентов, которые за последний год не совершили ни одного заказа (схема GROUP2)
+
+SELECT FirstName, LastName
+FROM Client C LEFT JOIN (
+	SELECT ClientID
+	FROM Orders O 
+	WHERE DATEDIFF(day, OrderDate, GETDATE()) <365 ) T ON T.ClientID=C.ClientID
+WHERE t.ClientID IS NULL
+
+4. Найти для каждого поставщика кол-во заказов за последние 5 лет.  (схема GROUP2)
+
+SELECT V.Name, count (OrderID)
+FROM Vendor V 
+LEFT JOIN Order O on v.VendorID=O.VendorID
+where DATEDIFF(year, OrderDate, GETDATE()) <5 
+GROUP BY V.Name
+	
+5. 
+Users (
+    id bigint NOT NULL,
+    email varchar(255) NOT NULL
+);
+
+Notifications (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    category varchar(100),
+    is_read boolean DEFAULT false
+);
+
+Найти список категорий для пользователя alex@gmail.com, в которых более 50 непрочитанных нотификаций
+
+select category, count (is_read) as count_notread
+from Notifications n
+join Users u on n.id=u.user_id
+where email='alex@gmail.com'
+and is_read='false'
+group by category
+having count (is_read) > 50
