@@ -1,0 +1,37 @@
+CREATE VIEW TOP_50
+AS
+	SELECT TOP 50 WITH TIES full_name, SUM (ball) AS sum_ball
+	FROM 
+	(SELECT M.staff_id, CONCAT (S.first_name, ' ', S.last_name) AS full_name, date_appointment,
+		CASE 
+		WHEN COUNT (M.id) >=10 THEN 3
+		WHEN COUNT (M.id) BETWEEN 5 AND 9 THEN 2
+		WHEN COUNT (M.id) <5 THEN 1
+		ELSE 0
+		END AS ball
+		FROM dbo.MedicalRecord M JOIN dbo.Staff S ON M.staff_id = S.id
+		GROUP BY M.staff_id, CONCAT (S.first_name, ' ', S.last_name), date_appointment
+	) t
+	GROUP BY full_name
+	ORDER BY sum_ball DESC;
+
+	SELECT * FROM TOP_50
+
+
+-- 2) 
+
+a)Не делать такую старомодную заливку
+Слишком много текста в заголовке
+Много букв в описании оси Y
+Легенда в данном случае лишняя
+
+b) Объемные графики искажают результат, лучше не использовать
+Лучше изобразить круговой диаграммой
+Непонятный нейминг
+
+c) Непонятно, что должен показывать дашборд. Обычно такие диаграммы используют для явного сравнения показателей
+Слишком много текста в нейминге
+Неудачные подписи оси Х, неудобно читать вертикальный текст
+
+
+
