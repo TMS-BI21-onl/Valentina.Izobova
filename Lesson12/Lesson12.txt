@@ -1,0 +1,6 @@
+2.AdventureWorks2017 uses an OLTP data processing system that is designed for everyday operational tasks.
+AdventureWorksDW2017 uses an OLAP data processing system to support data analysis and reporting.
+AdventureWorksDW2017 will run faster because:
+1. Denormalized structure. The database is designed using a star or snowflake schema, which allows for efficient querying and aggregation of data.
+2. Indexing: AdventureWorksDW2017 is optimized with appropriate indexes to support analytical queries
+3. Aggregations. AdventureWorksDW2017 often includes pre-aggregated data, which speeds up queries that require summarization or aggregation
